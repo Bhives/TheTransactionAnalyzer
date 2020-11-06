@@ -4,25 +4,27 @@ import java.util.Date;
 
 public class TransactionRecord {
 
-    private int transactionId;
+    private String transactionId;
     private Date transactionDate;
-    private int transactionAmount;
+    private float transactionAmount;
     private String transactionMerchant;
     private TransactionTypes transactionType;
+    private String relatedTransactionId;
 
-    public TransactionRecord(int transactionId, Date transactionDate, int transactionAmount, String transactionMerchant, TransactionTypes transactionType) {
+    public TransactionRecord(String transactionId, Date transactionDate, float transactionAmount, String transactionMerchant, TransactionTypes transactionType, String relatedTransactionId) {
         this.transactionId = transactionId;
         this.transactionDate = transactionDate;
         this.transactionAmount = transactionAmount;
         this.transactionMerchant = transactionMerchant;
         this.transactionType = transactionType;
+        this.relatedTransactionId = relatedTransactionId;
     }
 
-    public int getTransactionId() {
+    public String getTransactionId() {
         return transactionId;
     }
 
-    public void setTransactionId(int transactionId) {
+    public void setTransactionId(String transactionId) {
         this.transactionId = transactionId;
     }
 
@@ -34,11 +36,11 @@ public class TransactionRecord {
         this.transactionDate = transactionDate;
     }
 
-    public int getTransactionAmount() {
+    public float getTransactionAmount() {
         return transactionAmount;
     }
 
-    public void setTransactionAmount(int transactionAmount) {
+    public void setTransactionAmount(float transactionAmount) {
         this.transactionAmount = transactionAmount;
     }
 
@@ -58,12 +60,21 @@ public class TransactionRecord {
         this.transactionType = transactionType;
     }
 
+    public String getRelatedTransactionId() {
+        return relatedTransactionId;
+    }
+
+    public void setRelatedTransactionId(String relatedTransactionId) {
+        this.relatedTransactionId = relatedTransactionId;
+    }
+
     @Override
-    public String toString(){
-        return"Transacion №"+transactionId
-                +"; date/time: "+transactionDate
-                +"; value: "+transactionAmount
-                +"; merchant name: "+transactionMerchant
-                +"; transacion type: "+transactionType;
+    public String toString() {
+        return "Transaction ID: " + transactionId
+                + "; date/time: " + transactionDate
+                + "; value: " + transactionAmount
+                + "; merchant name: " + transactionMerchant
+                + "; transaction type: " + transactionType
+                + "; related transaction ID: " + relatedTransactionId;
     }
 }
