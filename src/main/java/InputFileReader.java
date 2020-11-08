@@ -14,7 +14,7 @@ public class InputFileReader {
     private File inputFile;
     private ArrayList<TransactionRecord> transactions;
 
-    public InputFileReader(File inputFile) {
+    public InputFileReader(File inputFile) throws FileNotFoundException, ParseException {
         this.inputFile = inputFile;
         this.transactions = this.writeTransactionsToList(inputFile);
     }
