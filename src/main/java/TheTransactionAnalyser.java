@@ -4,16 +4,8 @@ import java.text.ParseException;
 
 public class TheTransactionAnalyser {
 
-    public static void main(String[] args) throws FileNotFoundException, ParseException {
-        try {
+    public static void main(String[] args) {
             InputFileReader inputFileReader = new InputFileReader(new File("F:/GitHub/Java/The_Transaction_Analyser/src/main/resources/transactions.csv"));
-            System.out.println(inputFileReader.getTransactions());
-        }
-        catch (FileNotFoundException fileNotFoundException){
-            fileNotFoundException.printStackTrace();
-        }
-        catch (ParseException parseException){
-            parseException.printStackTrace();
-        }
+            System.out.println(inputFileReader.getTransactions().toString());
     }
 }
