@@ -1,4 +1,4 @@
-import Transactions.TransactionRecord;
+import Transactions.Transaction;
 import Transactions.TransactionTypes;
 
 import java.io.File;
@@ -7,37 +7,41 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.InputMismatchException;
+import java.util.Locale;
 import java.util.Scanner;
 
 public class InputFileReader {
 
     private File inputFile;
-    private ArrayList<TransactionRecord> transactions;
+    private ArrayList<Transaction> transactions= new ArrayList<Transaction>();
 
     public InputFileReader(File inputFile) {
         this.inputFile = inputFile;
-        this.transactions = this.writeTransactionsToList(inputFile);
+        this.transactions=this.writeTransactionsToList(inputFile);
     }
 
-    public ArrayList<TransactionRecord> writeTransactionsToList(File inputFile) {
-        try (Scanner fileScanner = new Scanner(inputFile)){
-            fileScanner.useDelimiter("\n");
-            fileScanner.next();
-            ArrayList<TransactionRecord> transactions = new ArrayList<TransactionRecord>();
+    public ArrayList<Transaction> writeTransactionsToList(File inputFile) {
+        try (Scanner fileScanner = new Scanner(inputFile)) {
+            fileScanner.useLocale(Locale.ENGLISH);
+            fileScanner.nextLine();
+            ArrayList<Transaction> transactions = new ArrayList<Transaction>();
             fileScanner.useDelimiter(",");
             DateFormat dateFormatter = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss");
             while (fileScanner.hasNext()) {
-                transactions.add(new TransactionRecord(fileScanner.next(), dateFormatter.parse(fileScanner.next()), fileScanner.nextFloat(), fileScanner.next(), TransactionTypes.valueOf(fileScanner.next()), fileScanner.next()));
+                //System.out.println(fileScanner.next());
+                transactions.add(new Transaction(fileScanner.next(), dateFormatter.parse(fileScanner.next()), fileScanner.nextFloat(), fileScanner.next(), TransactionTypes.valueOf(fileScanner.next()), fileScanner.next()));
             }
-        }
-        catch (FileNotFoundException fileNotFoundException){
-            fileNotFoundException.printStackTrace();
-        }
-        catch (ParseException parseException){
-            parseException.printStackTrace();
-        }
-        finally {
             return transactions;
+        } catch (FileNotFoundException fileNotFoundException) {
+            fileNotFoundException.printStackTrace();
+        } catch (ParseException parseException) {
+            parseException.printStackTrace();
+        } catch (InputMismatchException inputMismatchException) {
+            inputMismatchException.printStackTrace();
+        } finally {
+            System.out.println("Sorry, an error has occurred!");
+            return null;
         }
     }
 
@@ -49,11 +53,11 @@ public class InputFileReader {
         this.inputFile = inputFile;
     }
 
-    public ArrayList<TransactionRecord> getTransactions() {
+    public ArrayList<Transaction> getTransactions() {
         return transactions;
     }
 
-    public void setTransactions(ArrayList<TransactionRecord> transactions) {
+    public void setTransactions(ArrayList<Transaction> transactions) {
         this.transactions = transactions;
     }
 }

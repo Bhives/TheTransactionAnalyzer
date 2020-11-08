@@ -2,7 +2,7 @@ package Transactions;
 
 import java.util.Date;
 
-public class TransactionRecord {
+public class Transaction {
 
     private String transactionId;
     private Date transactionDate;
@@ -11,7 +11,7 @@ public class TransactionRecord {
     private TransactionTypes transactionType;
     private String relatedTransactionId;
 
-    public TransactionRecord(String transactionId, Date transactionDate, float transactionAmount, String transactionMerchant, TransactionTypes transactionType, String relatedTransactionId) {
+    public Transaction(String transactionId, Date transactionDate, float transactionAmount, String transactionMerchant, TransactionTypes transactionType, String relatedTransactionId) {
         this.transactionId = transactionId;
         this.transactionDate = transactionDate;
         this.transactionAmount = transactionAmount;
