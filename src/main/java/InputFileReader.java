@@ -1,15 +1,12 @@
 import Transactions.Transaction;
 import Transactions.TransactionTypes;
+import com.opencsv.CSVReader;
 
-import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.*;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.InputMismatchException;
-import java.util.Locale;
-import java.util.Scanner;
 
 public class InputFileReader {
 
@@ -22,23 +19,26 @@ public class InputFileReader {
     }
 
     public ArrayList<Transaction> writeTransactionsToList(File inputFile) {
-        try (Scanner fileScanner = new Scanner(inputFile)) {
-            fileScanner.useLocale(Locale.ENGLISH);
-            fileScanner.nextLine();
+        try (CSVReader inputFileReader = new CSVReader(new FileReader(inputFile), ',', '"', 1)) {
+            String[] currentLine = null;
             ArrayList<Transaction> transactions = new ArrayList<Transaction>();
-            fileScanner.useDelimiter(",");
             DateFormat dateFormatter = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss");
-            while (fileScanner.hasNext()) {
+            while ((currentLine = inputFileReader.readNext()) != null) {
                 //System.out.println(fileScanner.next());
-                transactions.add(new Transaction(fileScanner.next(), dateFormatter.parse(fileScanner.next()), fileScanner.nextFloat(), fileScanner.next(), TransactionTypes.valueOf(fileScanner.next()), fileScanner.next()));
+                transactions.add(new Transaction(currentLine[0],
+                        dateFormatter.parse(currentLine[1]),
+                        Float.parseFloat(currentLine[2]),
+                        currentLine[3],
+                        TransactionTypes.valueOf(currentLine[4]),
+                        currentLine[5]));
             }
             return transactions;
-        } catch (FileNotFoundException fileNotFoundException) {
-            fileNotFoundException.printStackTrace();
+        } catch (IOException iOException) {
+            iOException.printStackTrace();
         } catch (ParseException parseException) {
             parseException.printStackTrace();
-        } catch (InputMismatchException inputMismatchException) {
-            inputMismatchException.printStackTrace();
+        //} catch (InputMismatchException inputMismatchException) {
+        //    inputMismatchException.printStackTrace();
         } finally {
             System.out.println("Sorry, an error has occurred!");
             return null;
