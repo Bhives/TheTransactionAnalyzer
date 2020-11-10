@@ -8,12 +8,12 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
-public class InputFileReader {
+public class TransactionAnalyser {
 
     private File inputFile;
     private ArrayList<Transaction> transactions= new ArrayList<Transaction>();
 
-    public InputFileReader(File inputFile) {
+    public TransactionAnalyser(File inputFile) {
         this.inputFile = inputFile;
         this.transactions=this.writeTransactionsToList(inputFile);
     }
@@ -30,18 +30,13 @@ public class InputFileReader {
         SimpleDateFormat dateFormatter = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss");
         try {
             while ((currentLine = inputFileReader.readNext()) != null) {
-                transactions.add(new Transaction(currentLine[0],
-                        dateFormatter.parse(currentLine[1]),
-                        Float.parseFloat(currentLine[2]),
-                        currentLine[3],
-                        TransactionTypes.valueOf(currentLine[4]),
-                        currentLine[5]));
+                transactions.add(new Transaction(currentLine[0], dateFormatter.parse(currentLine[1]), Float.parseFloat(currentLine[2]), currentLine[3], TransactionTypes.valueOf(currentLine[4]), currentLine[5]));
             }
             inputFileReader.close();
-        } catch (ParseException parseException) {
-            parseException.printStackTrace();
         } catch (IOException iOException) {
             iOException.printStackTrace();
+        } catch (ParseException parseException) {
+            parseException.printStackTrace();
         } finally {
             return transactions;
         }
