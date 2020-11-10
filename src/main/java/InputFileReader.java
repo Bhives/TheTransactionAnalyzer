@@ -22,8 +22,8 @@ public class InputFileReader {
         CSVReader inputFileReader = null;
         try {
             inputFileReader = new CSVReader(new FileReader(inputFile), ',', '"', 1);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
+        } catch (FileNotFoundException fileNotFoundException) {
+            fileNotFoundException.printStackTrace();
         }
         String[] currentLine = null;
         ArrayList<Transaction> transactions = new ArrayList<Transaction>();
@@ -37,12 +37,12 @@ public class InputFileReader {
                             currentLine[3],
                             TransactionTypes.valueOf(currentLine[4]),
                             currentLine[5]));
-                } catch (ParseException e) {
-                    e.printStackTrace();
+                } catch (ParseException parseException) {
+                    parseException.printStackTrace();
                 }
             }
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (IOException iOException) {
+            iOException.printStackTrace();
         }
         return transactions;
     }
