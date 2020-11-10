@@ -19,30 +19,34 @@ public class InputFileReader {
     }
 
     public ArrayList<Transaction> writeTransactionsToList(File inputFile) {
-        try (CSVReader inputFileReader = new CSVReader(new FileReader(inputFile), ',', '"', 1)) {
-            String[] currentLine = null;
-            ArrayList<Transaction> transactions = new ArrayList<Transaction>();
-            DateFormat dateFormatter = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss");
-            while ((currentLine = inputFileReader.readNext()) != null) {
-                //System.out.println(fileScanner.next());
+        CSVReader inputFileReader = null;
+        try {
+            inputFileReader = new CSVReader(new FileReader(inputFile), ',', '"', 1);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        String[] currentLine = null;
+        ArrayList<Transaction> transactions = new ArrayList<Transaction>();
+        DateFormat dateFormatter = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss");
+        while (true) {
+            try {
+                if (!((currentLine = inputFileReader.readNext()) != null)) break;
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            //System.out.println(fileScanner.next());
+            try {
                 transactions.add(new Transaction(currentLine[0],
                         dateFormatter.parse(currentLine[1]),
                         Float.parseFloat(currentLine[2]),
                         currentLine[3],
                         TransactionTypes.valueOf(currentLine[4]),
                         currentLine[5]));
+            } catch (ParseException e) {
+                e.printStackTrace();
             }
-            return transactions;
-        } catch (IOException iOException) {
-            iOException.printStackTrace();
-        } catch (ParseException parseException) {
-            parseException.printStackTrace();
-        //} catch (InputMismatchException inputMismatchException) {
-        //    inputMismatchException.printStackTrace();
-        } finally {
-            System.out.println("Sorry, an error has occurred!");
-            return null;
         }
+        return transactions;
     }
 
     public File getInputFile() {
