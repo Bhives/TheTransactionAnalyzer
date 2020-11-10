@@ -12,6 +12,7 @@ public class TransactionAnalyser {
 
     private File inputFile;
     private ArrayList<Transaction> transactions= new ArrayList<Transaction>();
+    final SimpleDateFormat dateFormatter = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss");
 
     public TransactionAnalyser(File inputFile) {
         this.inputFile = inputFile;
@@ -27,7 +28,6 @@ public class TransactionAnalyser {
         }
         String[] currentLine = null;
         ArrayList<Transaction> transactions = new ArrayList<Transaction>();
-        SimpleDateFormat dateFormatter = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss");
         try {
             while ((currentLine = inputFileReader.readNext()) != null) {
                 transactions.add(new Transaction(currentLine[0], dateFormatter.parse(currentLine[1]), Float.parseFloat(currentLine[2]), currentLine[3], TransactionTypes.valueOf(currentLine[4]), currentLine[5]));
@@ -42,10 +42,18 @@ public class TransactionAnalyser {
         }
     }
 
-    public void analyzeTransactionsByMerchant(String merchantName){
-        for(Transaction transaction:transactions){
-            if (transaction.getTransactionMerchant().equals(merchantName)){
-                System.out.println(transaction.toString());
+    public void analyzeTransactionsByMerchant(String merchantName, String dateFrom, String dateTo){
+        int transactionCounter=0;
+        for (Transaction transaction : transactions) {
+            try {
+                if (transaction.getTransactionMerchant().equals(merchantName)) {
+                    if (transaction.getTransactionDate().after(dateFormatter.parse(dateFrom)) && transaction.getTransactionDate().before(dateFormatter.parse(dateTo))) {
+                        transactionCounter++;
+                        System.out.println(transaction.toString());
+                    }
+                }
+            } catch (ParseException parseException) {
+                parseException.printStackTrace();
             }
         }
     }
