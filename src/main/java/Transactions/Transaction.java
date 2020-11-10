@@ -69,6 +69,27 @@ public class Transaction {
     }
 
     @Override
+    public boolean equals(Object comparableObject) {
+        if (this == comparableObject) return true;
+        if (comparableObject==null||!(comparableObject instanceof Transaction)) return false;
+        Transaction transaction = (Transaction ) comparableObject;
+        return transactionId==transaction.getTransactionId()
+                &&transactionDate==transaction.getTransactionDate()
+                &&transactionAmount==transaction.getTransactionAmount()
+                &&transactionMerchant==transaction.getTransactionMerchant()
+                &&transactionType==transaction.getTransactionType()
+                &&relatedTransactionId==transaction.getRelatedTransactionId();
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 37;
+        int result = 1;
+        result = prime * result + transactionId.hashCode();
+        return result;
+    }
+
+    @Override
     public String toString() {
         return "Transaction ID: " + transactionId
                 + "; date/time: " + transactionDate

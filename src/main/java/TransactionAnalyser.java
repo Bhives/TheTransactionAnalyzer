@@ -3,10 +3,10 @@ import Transactions.TransactionTypes;
 import com.opencsv.CSVReader;
 
 import java.io.*;
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 public class TransactionAnalyser {
 
@@ -39,6 +39,14 @@ public class TransactionAnalyser {
             parseException.printStackTrace();
         } finally {
             return transactions;
+        }
+    }
+
+    public void analyzeTransactionsByMerchant(String merchantName){
+        for(Transaction transaction:transactions){
+            if (transaction.getTransactionMerchant().equals(merchantName)){
+                System.out.println(transaction.toString());
+            }
         }
     }
 
