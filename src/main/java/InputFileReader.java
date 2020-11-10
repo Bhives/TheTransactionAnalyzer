@@ -30,17 +30,15 @@ public class InputFileReader {
         SimpleDateFormat dateFormatter = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss");
         try {
             while ((currentLine = inputFileReader.readNext()) != null) {
-                try {
-                    transactions.add(new Transaction(currentLine[0],
-                            dateFormatter.parse(currentLine[1]),
-                            Float.parseFloat(currentLine[2]),
-                            currentLine[3],
-                            TransactionTypes.valueOf(currentLine[4]),
-                            currentLine[5]));
-                } catch (ParseException parseException) {
-                    parseException.printStackTrace();
-                }
+                transactions.add(new Transaction(currentLine[0],
+                        dateFormatter.parse(currentLine[1]),
+                        Float.parseFloat(currentLine[2]),
+                        currentLine[3],
+                        TransactionTypes.valueOf(currentLine[4]),
+                        currentLine[5]));
             }
+        } catch (ParseException parseException) {
+            parseException.printStackTrace();
         } catch (IOException iOException) {
             iOException.printStackTrace();
         }
