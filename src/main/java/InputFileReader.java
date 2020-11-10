@@ -27,14 +27,13 @@ public class InputFileReader {
         }
         String[] currentLine = null;
         ArrayList<Transaction> transactions = new ArrayList<Transaction>();
-        DateFormat dateFormatter = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss");
+        SimpleDateFormat dateFormatter = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss");
         while (true) {
             try {
                 if (!((currentLine = inputFileReader.readNext()) != null)) break;
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            //System.out.println(fileScanner.next());
             try {
                 transactions.add(new Transaction(currentLine[0],
                         dateFormatter.parse(currentLine[1]),
