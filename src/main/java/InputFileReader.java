@@ -37,12 +37,14 @@ public class InputFileReader {
                         TransactionTypes.valueOf(currentLine[4]),
                         currentLine[5]));
             }
+            inputFileReader.close();
         } catch (ParseException parseException) {
             parseException.printStackTrace();
         } catch (IOException iOException) {
             iOException.printStackTrace();
+        } finally {
+            return transactions;
         }
-        return transactions;
     }
 
     public File getInputFile() {
