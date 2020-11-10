@@ -28,22 +28,21 @@ public class InputFileReader {
         String[] currentLine = null;
         ArrayList<Transaction> transactions = new ArrayList<Transaction>();
         SimpleDateFormat dateFormatter = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss");
-        while (true) {
-            try {
-                if (!((currentLine = inputFileReader.readNext()) != null)) break;
-            } catch (IOException e) {
-                e.printStackTrace();
+        try {
+            while ((currentLine = inputFileReader.readNext()) != null) {
+                try {
+                    transactions.add(new Transaction(currentLine[0],
+                            dateFormatter.parse(currentLine[1]),
+                            Float.parseFloat(currentLine[2]),
+                            currentLine[3],
+                            TransactionTypes.valueOf(currentLine[4]),
+                            currentLine[5]));
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
             }
-            try {
-                transactions.add(new Transaction(currentLine[0],
-                        dateFormatter.parse(currentLine[1]),
-                        Float.parseFloat(currentLine[2]),
-                        currentLine[3],
-                        TransactionTypes.valueOf(currentLine[4]),
-                        currentLine[5]));
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
         return transactions;
     }
