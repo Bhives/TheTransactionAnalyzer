@@ -2,7 +2,9 @@ import Transactions.Transaction;
 import Transactions.TransactionTypes;
 import com.opencsv.CSVReader;
 
+import javax.xml.stream.util.StreamReaderDelegate;
 import java.io.*;
+import java.sql.SQLOutput;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -42,10 +44,12 @@ public class TransactionAnalyser {
     }
 
     public void analyzeTransactionsByMerchant(String merchantName, String dateFrom, String dateTo) {
-        transactions.stream()
-                .filter(transaction -> merchantName.equals(transaction.getTransactionMerchant()))
-                .filter(transaction -> transaction.getTransactionDate().after(this.parseStringToDate(dateFrom)) && transaction.getTransactionDate().before(this.parseStringToDate(dateTo)))
-                .forEach(System.out::println);
+        Stream<Transaction> transactionStream = transactions.stream();
+        System.out.println("Number of transactions = " + transactionStream
+                .filter(transaction -> merchantName.equals(transaction.getTransactionMerchant())
+                        && transaction.getTransactionDate().after(this.parseStringToDate(dateFrom))
+                        && transaction.getTransactionDate().before(this.parseStringToDate(dateTo)))
+                .count());
     }
 
     public Date parseStringToDate(String currentDate){
