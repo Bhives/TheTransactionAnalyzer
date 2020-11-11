@@ -6,6 +6,7 @@ import java.io.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.stream.Stream;
 
 public class TransactionAnalyser {
@@ -30,31 +31,32 @@ public class TransactionAnalyser {
         ArrayList<Transaction> transactions = new ArrayList<Transaction>();
         try {
             while ((currentLine = inputFileReader.readNext()) != null) {
-                transactions.add(new Transaction(currentLine[0], dateFormatter.parse(currentLine[1]), Float.parseFloat(currentLine[2]), currentLine[3], TransactionTypes.valueOf(currentLine[4]), currentLine[5]));
+                transactions.add(new Transaction(currentLine[0], this.parseStringToDate(currentLine[1]), Float.parseFloat(currentLine[2]), currentLine[3], TransactionTypes.valueOf(currentLine[4]), currentLine[5]));
             }
             inputFileReader.close();
         } catch (IOException iOException) {
             iOException.printStackTrace();
-        } catch (ParseException parseException) {
-            parseException.printStackTrace();
         } finally {
             return transactions;
         }
     }
 
-    public void analyzeTransactionsByMerchant(String merchantName, String dateFrom, String dateTo){
-        int transactionCounter=0;
-        for (Transaction transaction : transactions) {
-            try {
-                if (transaction.getTransactionMerchant().equals(merchantName)) {
-                    if (transaction.getTransactionDate().after(dateFormatter.parse(dateFrom)) && transaction.getTransactionDate().before(dateFormatter.parse(dateTo))) {
-                        transactionCounter++;
-                        System.out.println(transaction.toString());
-                    }
-                }
-            } catch (ParseException parseException) {
-                parseException.printStackTrace();
-            }
+    public void analyzeTransactionsByMerchant(String merchantName, String dateFrom, String dateTo) {
+        transactions.stream()
+                .filter(transaction -> merchantName.equals(transaction.getTransactionMerchant()))
+                .filter(transaction -> transaction.getTransactionDate().after(this.parseStringToDate(dateFrom)) && transaction.getTransactionDate().before(this.parseStringToDate(dateTo)))
+                .forEach(System.out::println);
+    }
+
+    public Date parseStringToDate(String currentDate){
+        Date newDate=new Date();
+        try {
+            newDate=dateFormatter.parse(currentDate);
+        } catch (ParseException parseException) {
+            parseException.printStackTrace();
+        }
+        finally {
+            return newDate;
         }
     }
 
