@@ -44,12 +44,15 @@ public class TransactionAnalyser {
     }
 
     public void analyzeTransactionsByMerchant(String merchantName, String dateFrom, String dateTo) {
+        ArrayList<Transaction> foundTransactions=new ArrayList<Transaction>();
         Stream<Transaction> transactionStream = transactions.stream();
-        System.out.println("Number of transactions = " + transactionStream
-                .filter(transaction -> merchantName.equals(transaction.getTransactionMerchant())
-                        && transaction.getTransactionDate().after(this.parseStringToDate(dateFrom))
+        transactionStream
+                .filter(transaction -> merchantName.equals(transaction.getTransactionMerchant()))
+                .filter(transaction -> transactions.stream().noneMatch(transaction1 -> transaction1.getRelatedTransactionId().equals(transaction.getTransactionId())))
+                .filter(transaction-> transaction.getTransactionDate().after(this.parseStringToDate(dateFrom))
                         && transaction.getTransactionDate().before(this.parseStringToDate(dateTo)))
-                .count());
+                .forEach(transaction -> foundTransactions.add(transaction));
+        System.out.printf("Number of transactions = %s", foundTransactions.size());
     }
 
     public Date parseStringToDate(String currentDate){
