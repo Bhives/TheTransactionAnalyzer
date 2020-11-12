@@ -8,8 +8,7 @@ public class ProgramStart {
 
     public static void main(String[] args) throws NullPointerException {
         TransactionAnalyser transactionAnalyser = new TransactionAnalyser(new File("./src/main/resources/transactions.csv"));
-        System.out.println(transactionAnalyser.getTransactions().toString());
-        System.out.println("Total number of transactions: "+transactionAnalyser.getTransactions().size());
+        //System.out.println(transactionAnalyser.getTransactions().toString());
         System.out.printf("Analysis of transactions made by %s, from %s to %s:\n", inputName, inputDateFrom, inputDateTo);
         transactionAnalyser.analyzeTransactionsByMerchant(inputName, inputDateFrom, inputDateTo);
     }

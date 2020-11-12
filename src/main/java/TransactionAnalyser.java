@@ -5,6 +5,7 @@ import com.opencsv.CSVReader;
 import java.io.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.DateTimeException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.stream.Stream;
@@ -12,12 +13,12 @@ import java.util.stream.Stream;
 public class TransactionAnalyser {
 
     private File inputFile;
-    private ArrayList<Transaction> transactions= new ArrayList<Transaction>();
+    private ArrayList<Transaction> transactions = new ArrayList<Transaction>();
     final SimpleDateFormat dateFormatter = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss");
 
     public TransactionAnalyser(File inputFile) {
         this.inputFile = inputFile;
-        this.transactions=this.writeTransactionsToList(inputFile);
+        this.transactions = this.writeTransactionsToList(inputFile);
     }
 
     public ArrayList<Transaction> writeTransactionsToList(File inputFile) {
@@ -42,28 +43,32 @@ public class TransactionAnalyser {
     }
 
     public void analyzeTransactionsByMerchant(String merchantName, String dateFrom, String dateTo) {
-        ArrayList<Transaction> foundTransactions=new ArrayList<Transaction>();
+        Date parsedDateFrom = parseStringToDate(dateFrom);
+        Date parsedDateTo = parseStringToDate(dateTo);
+        if (parsedDateFrom.after(parsedDateTo)){
+            throw new DateTimeException("Error! Incorrect date(s) value!");
+        }
+        ArrayList<Transaction> foundTransactions = new ArrayList<Transaction>();
         Stream<Transaction> transactionStream = transactions.stream();
         transactionStream
                 .filter(transaction -> merchantName.equals(transaction.getTransactionMerchant()))
                 .filter(transaction -> transactions.stream().noneMatch(transaction1 -> transaction1.getRelatedTransactionId().equals(transaction.getTransactionId())))
-                .filter(transaction-> transaction.getTransactionDate().after(this.parseStringToDate(dateFrom))
-                        && transaction.getTransactionDate().before(this.parseStringToDate(dateTo)))
+                .filter(transaction -> transaction.getTransactionDate().after(parsedDateFrom)
+                        && transaction.getTransactionDate().before(parsedDateTo))
                 .forEach(transaction -> foundTransactions.add(transaction));
-        System.out.println(foundTransactions.toString());
+        //System.out.println(foundTransactions.toString());
         System.out.printf("Number of transactions = %s\n", foundTransactions.size());
-        System.out.printf("Average Transaction Value = %s", foundTransactions.stream().mapToDouble(Transaction::getTransactionAmount).average().getAsDouble());
+        System.out.printf("Average Transaction Value = %.2f", foundTransactions.stream().mapToDouble(Transaction::getTransactionAmount).average().getAsDouble());
     }
 
-    public Date parseStringToDate(String currentDate){
-        Date newDate=new Date();
+    public Date parseStringToDate(String inputDate) {
+        Date parsedDate = new Date();
         try {
-            newDate=dateFormatter.parse(currentDate);
+            parsedDate = dateFormatter.parse(inputDate);
         } catch (ParseException parseException) {
             parseException.printStackTrace();
-        }
-        finally {
-            return newDate;
+        } finally {
+            return parsedDate;
         }
     }
 
