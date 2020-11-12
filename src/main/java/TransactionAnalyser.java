@@ -36,7 +36,12 @@ public class TransactionAnalyser {
         ArrayList<Transaction> transactions = new ArrayList<Transaction>();
         try {
             while ((currentLine = inputFileReader.readNext()) != null) {
-                transactions.add(new Transaction(currentLine[0], this.parseStringToDate(currentLine[1]), Double.parseDouble(currentLine[2]), currentLine[3], TransactionTypes.valueOf(currentLine[4]), currentLine[5]));
+                transactions.add(new Transaction(currentLine[0],
+                        parseStringToDate(currentLine[1]),
+                        Double.parseDouble(currentLine[2]),
+                        currentLine[3],
+                        TransactionTypes.valueOf(currentLine[4]),
+                        currentLine[5]));
             }
         } catch (IOException | NullPointerException exception) {
             exception.printStackTrace();
