@@ -21,6 +21,10 @@ public class TransactionAnalyser {
         this.transactions = this.writeTransactionsToList(inputFile);
     }
 
+    /*
+        This method reads .csv-file
+        and parses it's data to list of objects
+     */
     public ArrayList<Transaction> writeTransactionsToList(File inputFile) {
         CSVReader inputFileReader = null;
         try {
@@ -34,20 +38,32 @@ public class TransactionAnalyser {
             while ((currentLine = inputFileReader.readNext()) != null) {
                 transactions.add(new Transaction(currentLine[0], this.parseStringToDate(currentLine[1]), Double.parseDouble(currentLine[2]), currentLine[3], TransactionTypes.valueOf(currentLine[4]), currentLine[5]));
             }
-            inputFileReader.close();
-        } catch (IOException iOException) {
-            iOException.printStackTrace();
+        } catch (IOException | NullPointerException exception) {
+            exception.printStackTrace();
         } finally {
+            try {
+                inputFileReader.close();
+            } catch (IOException iOException) {
+                iOException.printStackTrace();
+            }
             return transactions;
         }
     }
+
+    /*
+        Main analyzer method to find certain transactions with our input search data
+        and make an output with total number of found transactions and it's average amount
+        + ignores transactions that were reversed
+     */
 
     public void analyzeTransactionsByMerchant(String merchantName, String dateFrom, String dateTo) {
         ArrayList<Transaction> foundTransactions = new ArrayList<Transaction>();
         try {
             transactions.stream()
                     .filter(transaction -> merchantName.equals(transaction.getTransactionMerchant()))
-                    .filter(transaction -> transactions.stream().noneMatch(transactionIfRelated -> transactionIfRelated.getRelatedTransactionId().equals(transaction.getTransactionId())))
+                    .filter(transaction -> transactions.stream()
+                            .noneMatch(transactionIfRelated -> transactionIfRelated
+                                    .getRelatedTransactionId().equals(transaction.getTransactionId())))
                     .filter(transaction -> transaction.getTransactionDate().after(parseStringToDate(dateFrom))
                             && transaction.getTransactionDate().before(parseStringToDate(dateTo)))
                     .forEach(transaction -> foundTransactions.add(transaction));
@@ -58,9 +74,10 @@ public class TransactionAnalyser {
         }
     }
 
-    /*This method is managed to simplify parsing operations for strings with date to Date object -
+    /*
+        This method is managed to simplify parsing operations for strings with date to Date object -
         to make less exception handling operations throughout the code
-      */
+     */
 
     public Date parseStringToDate(String inputDate) {
         Date parsedDate = new Date();
