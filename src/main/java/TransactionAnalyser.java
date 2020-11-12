@@ -2,9 +2,7 @@ import Transactions.Transaction;
 import Transactions.TransactionTypes;
 import com.opencsv.CSVReader;
 
-import javax.xml.stream.util.StreamReaderDelegate;
 import java.io.*;
-import java.sql.SQLOutput;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -33,7 +31,7 @@ public class TransactionAnalyser {
         ArrayList<Transaction> transactions = new ArrayList<Transaction>();
         try {
             while ((currentLine = inputFileReader.readNext()) != null) {
-                transactions.add(new Transaction(currentLine[0], this.parseStringToDate(currentLine[1]), Float.parseFloat(currentLine[2]), currentLine[3], TransactionTypes.valueOf(currentLine[4]), currentLine[5]));
+                transactions.add(new Transaction(currentLine[0], this.parseStringToDate(currentLine[1]), Double.parseDouble(currentLine[2]), currentLine[3], TransactionTypes.valueOf(currentLine[4]), currentLine[5]));
             }
             inputFileReader.close();
         } catch (IOException iOException) {
@@ -52,7 +50,9 @@ public class TransactionAnalyser {
                 .filter(transaction-> transaction.getTransactionDate().after(this.parseStringToDate(dateFrom))
                         && transaction.getTransactionDate().before(this.parseStringToDate(dateTo)))
                 .forEach(transaction -> foundTransactions.add(transaction));
-        System.out.printf("Number of transactions = %s", foundTransactions.size());
+        System.out.println(foundTransactions.toString());
+        System.out.printf("Number of transactions = %s\n", foundTransactions.size());
+        System.out.printf("Average Transaction Value = %s", foundTransactions.stream().mapToDouble(Transaction::getTransactionAmount).average().getAsDouble());
     }
 
     public Date parseStringToDate(String currentDate){

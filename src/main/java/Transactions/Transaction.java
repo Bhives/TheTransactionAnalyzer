@@ -6,12 +6,12 @@ public class Transaction {
 
     private String transactionId;
     private Date transactionDate;
-    private float transactionAmount;
+    private double transactionAmount;
     private String transactionMerchant;
     private TransactionTypes transactionType;
     private String relatedTransactionId;
 
-    public Transaction(String transactionId, Date transactionDate, float transactionAmount, String transactionMerchant, TransactionTypes transactionType, String relatedTransactionId) {
+    public Transaction(String transactionId, Date transactionDate, double transactionAmount, String transactionMerchant, TransactionTypes transactionType, String relatedTransactionId) {
         this.transactionId = transactionId;
         this.transactionDate = transactionDate;
         this.transactionAmount = transactionAmount;
@@ -36,11 +36,11 @@ public class Transaction {
         this.transactionDate = transactionDate;
     }
 
-    public float getTransactionAmount() {
+    public double getTransactionAmount() {
         return transactionAmount;
     }
 
-    public void setTransactionAmount(float transactionAmount) {
+    public void setTransactionAmount(double transactionAmount) {
         this.transactionAmount = transactionAmount;
     }
 
