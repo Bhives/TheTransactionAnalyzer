@@ -3,11 +3,13 @@ import Transactions.TransactionTypes;
 import com.opencsv.CSVReader;
 
 import java.io.*;
+import java.rmi.NoSuchObjectException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.DateTimeException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.NoSuchElementException;
 import java.util.stream.Stream;
 
 public class TransactionAnalyser {
@@ -49,16 +51,21 @@ public class TransactionAnalyser {
             throw new DateTimeException("Error! Incorrect date(s) value!");
         }
         ArrayList<Transaction> foundTransactions = new ArrayList<Transaction>();
-        Stream<Transaction> transactionStream = transactions.stream();
-        transactionStream
-                .filter(transaction -> merchantName.equals(transaction.getTransactionMerchant()))
-                .filter(transaction -> transactions.stream().noneMatch(transaction1 -> transaction1.getRelatedTransactionId().equals(transaction.getTransactionId())))
-                .filter(transaction -> transaction.getTransactionDate().after(parsedDateFrom)
-                        && transaction.getTransactionDate().before(parsedDateTo))
-                .forEach(transaction -> foundTransactions.add(transaction));
+        try {
+            transactions.stream()
+                    .filter(transaction -> merchantName.equals(transaction.getTransactionMerchant()))
+                    .filter(transaction -> transactions.stream().noneMatch(transaction1 -> transaction1.getRelatedTransactionId().equals(transaction.getTransactionId())))
+                    .filter(transaction -> transaction.getTransactionDate().after(parsedDateFrom)
+                            && transaction.getTransactionDate().before(parsedDateTo))
+                    .forEach(transaction -> foundTransactions.add(transaction));
+
         //System.out.println(foundTransactions.toString());
         System.out.printf("Number of transactions = %s\n", foundTransactions.size());
         System.out.printf("Average Transaction Value = %.2f", foundTransactions.stream().mapToDouble(Transaction::getTransactionAmount).average().getAsDouble());
+        }
+        catch (NoSuchElementException noSuchElementException){
+            noSuchElementException.printStackTrace();
+        }
     }
 
     public Date parseStringToDate(String inputDate) {

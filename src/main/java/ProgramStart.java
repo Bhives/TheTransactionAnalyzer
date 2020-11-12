@@ -6,7 +6,7 @@ public class ProgramStart {
     public static String inputDateFrom= "11/09/2020 13:00:00";
     public static String inputDateTo= "11/09/2020 14:00:00";
 
-    public static void main(String[] args) throws NullPointerException {
+    public static void main(String[] args) {
         TransactionAnalyser transactionAnalyser = new TransactionAnalyser(new File("./src/main/resources/transactions.csv"));
         //System.out.println(transactionAnalyser.getTransactions().toString());
         System.out.printf("Analysis of transactions made by %s, from %s to %s:\n", inputName, inputDateFrom, inputDateTo);
