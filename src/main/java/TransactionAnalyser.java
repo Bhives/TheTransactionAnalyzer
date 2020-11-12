@@ -18,13 +18,14 @@ public class TransactionAnalyser {
 
     public TransactionAnalyser(File inputFile) {
         this.inputFile = inputFile;
-        this.transactions = this.writeTransactionsToList(inputFile);
+        this.transactions = writeTransactionsToList(inputFile);
     }
 
     /*
         This method reads .csv-file
         and parses it's data to list of objects
      */
+
     public ArrayList<Transaction> writeTransactionsToList(File inputFile) {
         CSVReader inputFileReader = null;
         try {
@@ -74,8 +75,8 @@ public class TransactionAnalyser {
                     .forEach(transaction -> foundTransactions.add(transaction));
             System.out.printf("Number of transactions = %s\n", foundTransactions.size());
             System.out.printf("Average transaction value = %.2f", foundTransactions.stream().mapToDouble(Transaction::getTransactionAmount).average().getAsDouble());
-        } catch (NoSuchElementException | DateTimeException exception) {
-            exception.printStackTrace();
+        } catch (NoSuchElementException noSuchElementException) {
+            noSuchElementException.printStackTrace();
         }
     }
 
