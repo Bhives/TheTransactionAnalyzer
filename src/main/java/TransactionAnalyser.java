@@ -67,11 +67,8 @@ public class TransactionAnalyser {
         try {
             transactions.stream()
                     .filter(transaction -> merchantName.equals(transaction.getTransactionMerchant()))
-                    .filter(transaction -> transactions.stream()
-                            .noneMatch(transactionIfRelated -> transactionIfRelated
-                                    .getRelatedTransactionId().equals(transaction.getTransactionId())))
-                    .filter(transaction -> transaction.getTransactionDate().after(parseStringToDate(dateFrom))
-                            && transaction.getTransactionDate().before(parseStringToDate(dateTo)))
+                    .filter(transaction -> transactions.stream().noneMatch(transactionIfRelated -> transactionIfRelated.getRelatedTransactionId().equals(transaction.getTransactionId())))
+                    .filter(transaction -> transaction.getTransactionDate().after(parseStringToDate(dateFrom)) && transaction.getTransactionDate().before(parseStringToDate(dateTo)))
                     .forEach(transaction -> foundTransactions.add(transaction));
             System.out.printf("Number of transactions = %s\n", foundTransactions.size());
             System.out.printf("Average transaction value = %.2f", foundTransactions.stream().mapToDouble(Transaction::getTransactionAmount).average().getAsDouble());
