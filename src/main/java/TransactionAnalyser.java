@@ -3,14 +3,12 @@ import Transactions.TransactionTypes;
 import com.opencsv.CSVReader;
 
 import java.io.*;
-import java.rmi.NoSuchObjectException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.DateTimeException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.NoSuchElementException;
-import java.util.stream.Stream;
 
 public class TransactionAnalyser {
 
@@ -45,28 +43,24 @@ public class TransactionAnalyser {
     }
 
     public void analyzeTransactionsByMerchant(String merchantName, String dateFrom, String dateTo) {
-        Date parsedDateFrom = parseStringToDate(dateFrom);
-        Date parsedDateTo = parseStringToDate(dateTo);
-        if (parsedDateFrom.after(parsedDateTo)){
-            throw new DateTimeException("Error! Incorrect date(s) value!");
-        }
         ArrayList<Transaction> foundTransactions = new ArrayList<Transaction>();
         try {
             transactions.stream()
                     .filter(transaction -> merchantName.equals(transaction.getTransactionMerchant()))
-                    .filter(transaction -> transactions.stream().noneMatch(transaction1 -> transaction1.getRelatedTransactionId().equals(transaction.getTransactionId())))
-                    .filter(transaction -> transaction.getTransactionDate().after(parsedDateFrom)
-                            && transaction.getTransactionDate().before(parsedDateTo))
+                    .filter(transaction -> transactions.stream().noneMatch(transactionIfRelated -> transactionIfRelated.getRelatedTransactionId().equals(transaction.getTransactionId())))
+                    .filter(transaction -> transaction.getTransactionDate().after(parseStringToDate(dateFrom))
+                            && transaction.getTransactionDate().before(parseStringToDate(dateTo)))
                     .forEach(transaction -> foundTransactions.add(transaction));
-
-        //System.out.println(foundTransactions.toString());
-        System.out.printf("Number of transactions = %s\n", foundTransactions.size());
-        System.out.printf("Average Transaction Value = %.2f", foundTransactions.stream().mapToDouble(Transaction::getTransactionAmount).average().getAsDouble());
-        }
-        catch (NoSuchElementException noSuchElementException){
-            noSuchElementException.printStackTrace();
+            System.out.printf("Number of transactions = %s\n", foundTransactions.size());
+            System.out.printf("Average transaction value = %.2f", foundTransactions.stream().mapToDouble(Transaction::getTransactionAmount).average().getAsDouble());
+        } catch (NoSuchElementException | DateTimeException exception) {
+            exception.printStackTrace();
         }
     }
+
+    /*This method is managed to simplify parsing operations for strings with date to Date object -
+        to make less exception handling operations throughout the code
+      */
 
     public Date parseStringToDate(String inputDate) {
         Date parsedDate = new Date();
